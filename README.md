@@ -1,0 +1,4 @@
+vinz
+====
+
+CLI password vault
