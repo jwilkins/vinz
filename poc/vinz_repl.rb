@@ -1,5 +1,14 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+require 'bundler'
+Bundler.require
 require 'docopt'
 require 'scrypt'
+require 'readline'
+
+libdir = File.join(File.dirname(__FILE__), '..', 'lib')
+$: << libdir unless $:.include?(libdir)
+require 'vinz'
 
 begin
   require 'ruby-debug'
@@ -16,7 +25,11 @@ Options:
   -q --quiet           terse output
 EOD
 
-options = Docopt(doc, VINZ::VERSION)
+begin
+  options = Docopt::docopt(doc, :version => VINZ::VERSION)
+rescue Docopt::Exit => e
+    puts e.message
+end
 
 password = ''
 prompt = 'vinz> '

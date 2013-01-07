@@ -4,7 +4,7 @@ $:.push File.expand_path("../config", __FILE__)
 require "vinz/version"
 
 Gem::Specification.new do |s|
-  s.name        = "pwvault"
+  s.name        = "vinz"
   s.version     = VINZ::VERSION
   s.authors     = ["Jonathan Wilkins"]
   s.email       = ["jwilkins@bitland.net"]
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   # specify any dependencies here; for example:
   s.add_runtime_dependency "docopt"
   s.add_runtime_dependency "rake"
+  s.add_runtime_dependency "scrypt"
   #s.add_runtime_dependency "bootlace"
   #s.add_runtime_dependency "standalone_migrations"
   #s.add_runtime_dependency "plist"
