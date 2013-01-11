@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "docopt"
   s.add_runtime_dependency "rake"
   s.add_runtime_dependency "scrypt"
+  s.add_runtime_dependency "nacl"
   #s.add_runtime_dependency "bootlace"
   #s.add_runtime_dependency "standalone_migrations"
   #s.add_runtime_dependency "plist"
@@ -48,6 +49,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency "awesome_print"
   s.add_development_dependency "method_info"
   s.add_development_dependency "rack-test"
+  s.add_development_dependency "pry"
+  s.add_development_dependency "pry-doc"
+  s.add_development_dependency "pry-debugger"
+  s.add_development_dependency "pry-stack_explorer"
   #s.add_development_dependency "ruby-graphviz"
   if RUBY_VERSION =~ /1.9/
   s.add_development_dependency "ruby-debug19"

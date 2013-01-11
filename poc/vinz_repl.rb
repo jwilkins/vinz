@@ -2,27 +2,32 @@
 # encoding: UTF-8
 require 'bundler'
 Bundler.require
+
 require 'docopt'
 require 'scrypt'
+require 'nacl'
+require 'securerandom'
 require 'readline'
+begin
+  require 'pry'
+  require 'ruby-debug'
+rescue LoadError => e
+  puts "Error loading ruby-debug: #{e}"
+end
 
 libdir = File.join(File.dirname(__FILE__), '..', 'lib')
 $: << libdir unless $:.include?(libdir)
 require 'vinz'
 
-begin
-  require 'ruby-debug'
-rescue LoadError
-end
-
 doc=<<EOD
 Usage: #{File.basename(__FILE__)} [options] <arguments>...
 
 Options:
-  -h --help            show this help message and exit
-  --version            show version and exit
-  -v --verbose         print extra debugging messages
-  -q --quiet           terse output
+  -h --help              show this help message and exit
+  --version              show version and exit
+  -v --verbose           print extra debugging messages
+  -q --quiet             terse output
+  -f NAME --file=NAME    use file instead of default .vinzdb
 EOD
 
 begin
@@ -32,7 +37,8 @@ rescue Docopt::Exit => e
 end
 
 password = ''
-prompt = 'vinz> '
+shell_prompt = 'vinz> '
+vinz = Vinz.new
 
 def show_help(cmds, args='')
   puts "Commands: "
@@ -41,9 +47,14 @@ def show_help(cmds, args='')
 end
 
 cmds = {
-  /^(?<quit>quit)\s*(?<args>.*)/ => Proc.new {puts; exit 0},
-  /^(?<help>help)\s*(?<args>.*)/ => -> args='' { show_help(cmds, args) },
-  /^(?<unlock>unlock)\s*(?<args>.*)/ => -> args='' { password = SCrypt::Password.create(args) }
+  /^(?<quit>quit)\s*(?<args>.*)/     => Proc.new { puts; exit 0 },
+  /^(?<help>help)\s*(?<args>.*)/     => -> args='' { show_help(cmds, args) },
+  /^(?<debug>debug)\s*(?<args>.*)/     => -> args='' { debugger },
+  /^(?<save>save)\s*(?<args>.*)/     => -> args='' { vinz.save },
+  /^(?<load>load)\s*(?<args>.*)/     => -> args='' { vinz.load },
+  /^(?<add>add)\s*(?<args>.*)/       => -> args='' { 
+                                              puts vinz.add(args[0], args[1..-1]) },
+  /^(?<lookup>lookup)\s*(?<args>.*)/ => -> args='' { puts vinz.lookup(args) }
 }
 
 repl = -> prompt {
@@ -73,7 +84,7 @@ repl = -> prompt {
 
 loop {
   begin
-    repl[prompt]
+    repl[shell_prompt]
   #rescue => e
   #  puts("=> Error: #{e}")
   end
